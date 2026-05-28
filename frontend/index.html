@@ -609,7 +609,7 @@
 
             try {
                 // 3. API Request to FastAPI Backend
-                const response = await fetch('http://127.0.0.1:8000/chat', {
+                const response = await fetch('https://enhancements-whats-applies-recipes.trycloudflare.com/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -641,7 +641,7 @@
                 bubble.style.border = '1px solid rgba(255, 50, 50, 0.5)';
                 bubble.style.backgroundColor = 'rgba(255, 50, 50, 0.1)';
                 
-                await typeText(bubble, "Connection Error: Failed to reach SentinelNet core. Please ensure backend server is running on http://127.0.0.1:8000.");
+                await typeText(bubble, "Connection Error: Failed to reach SentinelNet core. Please ensure backend server is currently online and accessible.");
             }
         }
     </script>
