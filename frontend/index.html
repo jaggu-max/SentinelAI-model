@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelNet AI - Futuristic Chatbot</title>
+    <style>
+        /* CSS Reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Variables for Dark Luxury & Neon Theme */
+        :root {
+            --bg-base: #050510;
+            --neon-blue: #00f0ff;
+            --neon-purple: #8a2be2;
+            --cyan-glow: rgba(0, 240, 255, 0.5);
+            --purple-glow: rgba(138, 43, 226, 0.5);
+            --glass-bg: rgba(20, 20, 30, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --ai-bubble: rgba(0, 240, 255, 0.1);
+            --ai-border: rgba(0, 240, 255, 0.4);
+            --user-bubble: rgba(138, 43, 226, 0.2);
+            --user-border: rgba(138, 43, 226, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Animated Neon Background */
+        .animated-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(138,43,226,0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(0,240,255,0.15) 0%, transparent 40%);
+            z-index: -2;
+            animation: pulse-bg 15s infinite alternate;
+        }
+
+        @keyframes pulse-bg {
+            0% { transform: scale(1); filter: brightness(1); }
+            100% { transform: scale(1.1); filter: brightness(1.2); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(110vh) scale(0.5);
+                opacity: 0;
+            }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% {
+                transform: translateY(-10vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Chat Container Layout - Glassmorphism */
+        .chat-wrapper {
+            width: 100%;
+            max-width: 900px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6),
+                        inset 0 0 20px rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Top Header Glow */
+        .chat-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), transparent);
+            animation: scan-line 3s linear infinite;
+        }
+
+        @keyframes scan-line {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Header */
+        .chat-header {
+            padding: 20px 30px;
+            background: rgba(10, 10, 15, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ai-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #101015, #1a1a24);
+            border: 1px solid var(--neon-purple);
+            box-shadow: 0 0 15px var(--purple-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .ai-avatar svg {
+            width: 28px;
+            height: 28px;
+            fill: none;
+            stroke: var(--neon-blue);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 5px var(--neon-blue));
+        }
+
+        .online-dot {
+            position: absolute;
+            bottom: -3px;
+            right: -3px;
+            width: 12px;
+            height: 12px;
+            background-color: #00ff00;
+            border: 2px solid #1a1a24;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .ai-info h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #fff, #b0b0d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ai-info .status {
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            font-weight: 500;
+            margin-top: 3px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Chat Area */
+        .chat-body {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        .chat-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));
+            border-radius: 10px;
+        }
+
+        /* Message Formatting */
+        .message-row {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .message-row.ai {
+            align-items: flex-start;
+        }
+
+        .message-row.user {
+            align-items: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 16px 22px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            word-wrap: break-word;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .message-row.ai .message-bubble {
+            background: var(--ai-bubble);
+            border: 1px solid var(--ai-border);
+            border-radius: 4px 20px 20px 20px;
+            box-shadow: 0 5px 20px rgba(0, 240, 255, 0.05);
+            color: #d0f8ff;
+        }
+
+        .message-row.user .message-bubble {
+            background: var(--user-bubble);
+            border: 1px solid var(--user-border);
+            border-radius: 20px 4px 20px 20px;
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.1);
+            color: #f0e6ff;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .message-row.ai .message-time {
+            margin-left: 5px;
+        }
+
+        .message-row.user .message-time {
+            margin-right: 5px;
+        }
+
+        /* Loading / Thinking Animation */
+        .thinking-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 5px;
+        }
+
+        .thinking-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            animation: pulse-dot 1.4s infinite ease-in-out both;
+        }
+
+        .thinking-dot:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-dot:nth-child(2) { animation-delay: -0.16s; background: var(--neon-purple); }
+        .thinking-dot:nth-child(3) { animation-delay: 0; background: #fff; }
+
+        @keyframes pulse-dot {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; box-shadow: 0 0 10px var(--neon-blue); }
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input formatting area */
+        .chat-footer {
+            padding: 20px 30px;
+            background: rgba(5, 5, 10, 0.7);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 10;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 15, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 5px 5px 5px 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* Animated border using pseudo element */
+        .input-group::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 22px;
+            background: linear-gradient(45deg, var(--neon-blue), transparent, var(--neon-purple));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .input-group:focus-within {
+            border-color: transparent;
+            background: rgba(20, 20, 25, 0.9);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
+        }
+
+        .input-group:focus-within::before {
+            opacity: 0.5;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1rem;
+            line-height: 24px;
+            padding: 15px 0;
+            resize: none;
+            outline: none;
+            height: 54px;
+            max-height: 150px;
+            font-family: inherit;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px var(--purple-glow);
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 5px 25px var(--cyan-glow);
+        }
+        
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .send-icon {
+            width: 22px;
+            height: 22px;
+            fill: #fff;
+            transform: translateX(2px) translateY(1px);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .chat-wrapper {
+                height: 100vh;
+                border-radius: 0;
+                border: none;
+            }
+            .message-bubble {
+                max-width: 90%;
+            }
+            .chat-header, .chat-footer, .chat-body {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated Background & Particles -->
+    <div class="animated-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="chat-wrapper">
+        <!-- Header -->
+        <header class="chat-header">
+            <div class="header-brand">
+                <div class="ai-avatar">
+                    <svg viewBox="0 0 24 24">
+                        <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
+                        <line x1="12" y1="22" x2="12" y2="12"></line>
+                        <line x1="22" y1="8.5" x2="12" y2="12"></line>
+                        <line x1="2" y1="8.5" x2="12" y2="12"></line>
+                        <line x1="12" y1="2" x2="12" y2="12"></line>
+                    </svg>
+                    <div class="online-dot"></div>
+                </div>
+                <div class="ai-info">
+                    <h1>SentinelNet AI</h1>
+                    <div class="status">System Online & Ready</div>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="menu-icon" stroke="rgba(255,255,255,0.4)" stroke-width="2" style="cursor: pointer; transition: stroke 0.3s;" onmouseover="this.style.stroke='#00f0ff'" onmouseout="this.style.stroke='rgba(255,255,255,0.4)'">
+                    <circle cx="12" cy="5" r="1.5"></circle>
+                    <circle cx="12" cy="12" r="1.5"></circle>
+                    <circle cx="12" cy="19" r="1.5"></circle>
+                </svg>
+            </div>
+        </header>
+
+        <!-- Chat messages container -->
+        <main class="chat-body" id="chat-body">
+            <!-- Greeting Message -->
+            <div class="message-row ai">
+                <div class="message-bubble">
+                    Initializing connection... <br><br>
+                    Greetings. I am SentinelNet, an advanced intelligence system. How may I assist you with your queries today?
+                </div>
+                <div class="message-time" id="greeting-time"></div>
+            </div>
+        </main>
+
+        <!-- Chat input area -->
+        <footer class="chat-footer">
+            <div class="input-group">
+                <textarea 
+                    class="chat-input" 
+                    id="chat-input" 
+                    placeholder="Enter command or query..." 
+                    rows="1"
+                ></textarea>
+                <button class="send-btn" id="send-btn" aria-label="Send">
+                    <svg class="send-icon" viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                    </svg>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Frontend Logic -->
+    <script>
+        // Init Time
+        document.getElementById('greeting-time').textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        // DOM Elements
+        const chatBody = document.getElementById('chat-body');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const particlesContainer = document.getElementById('particles');
+
+        // Particle generation
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            // Randomize styling
+            const size = Math.random() * 5 + 2;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
+            particle.style.animationDelay = `${Math.random() * 10}s`;
+            particlesContainer.appendChild(particle);
+        }
+
+        // Auto-resize input
+        chatInput.addEventListener('input', function() {
+            this.style.height = '54px'; 
+            if (this.scrollHeight > 54) {
+                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            }
+        });
+
+        // Key bindings
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // prevent new line
+                handleSend();
+            }
+        });
+        sendBtn.addEventListener('click', handleSend);
+
+        // Utilities
+        function getTimestamp() {
+            return new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function scrollToBottom() {
+            chatBody.scrollTo({
+                top: chatBody.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        function createMessageElement(content, senderClass) {
+            const row = document.createElement('div');
+            row.className = `message-row ${senderClass}`;
+
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.textContent = content;
+
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTimestamp();
+
+            row.appendChild(bubble);
+            row.appendChild(time);
+            chatBody.appendChild(row);
+            
+            return { row, bubble };
+        }
+
+        function createThinkingIndicator() {
+            const row = document.createElement('div');
+            row.className = `message-row ai`;
+            row.id = 'thinking-indicator';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble thinking-indicator';
+            
+            bubble.innerHTML = `
+                <div class="thinking-dot"></div>
+                <div class="thinking-dot"></div>
+                <div class="thinking-dot"></div>
+            `;
+
+            row.appendChild(bubble);
+            chatBody.appendChild(row);
+            return row;
+        }
+
+        // Typing Effect Function
+        async function typeText(element, text, speed = 25) {
+            element.textContent = '';
+            for (let i = 0; i < text.length; i++) {
+                element.textContent += text.charAt(i);
+                
+                // Auto scroll while typing if we are near bottom
+                if (chatBody.scrollHeight - chatBody.scrollTop - chatBody.clientHeight < 100) {
+                     scrollToBottom();
+                }
+                
+                // Brief pause for punctuation adds realism
+                let currentSpeed = speed;
+                if (['.', '!', '?'].includes(text.charAt(i))) currentSpeed += 300;
+                if ([',', ';'].includes(text.charAt(i))) currentSpeed += 150;
+
+                await new Promise(r => setTimeout(r, currentSpeed));
+            }
+        }
+
+        // Send & Fetch Logic
+        async function handleSend() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // Reset UI
+            chatInput.value = '';
+            chatInput.style.height = '54px';
+            chatInput.focus();
+
+            // 1. Render User Message
+            createMessageElement(text, 'user');
+            scrollToBottom();
+
+            // 2. Render Thinking UI
+            const loader = createThinkingIndicator();
+            scrollToBottom();
+
+            try {
+                // 3. API Request to FastAPI Backend
+                const response = await fetch('http://127.0.0.1:8000/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: text }) // Backend expects {"message": str}
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Expecting {"reply": "..."} as per backend/main.py
+                const aiText = data.reply || "Error: No reply field from backend.";
+
+                // 4. Remove loader and display AI message
+                loader.remove();
+                const { bubble } = createMessageElement('', 'ai');
+                
+                // 5. Typing Animation
+                await typeText(bubble, aiText);
+
+            } catch (error) {
+                console.error("API Error:", error);
+                loader.remove();
+                
+                const { bubble } = createMessageElement('', 'ai');
+                bubble.style.border = '1px solid rgba(255, 50, 50, 0.5)';
+                bubble.style.backgroundColor = 'rgba(255, 50, 50, 0.1)';
+                
+                await typeText(bubble, "Connection Error: Failed to reach SentinelNet core. Please ensure backend server is running on http://127.0.0.1:8000.");
+            }
+        }
+    </script>
+</body>
+</html>
